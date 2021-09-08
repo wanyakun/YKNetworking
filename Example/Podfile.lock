@@ -1,0 +1,23 @@
+PODS:
+  - Alamofire (5.4.3)
+  - YKNetworking (0.0.1):
+    - Alamofire (~> 5.4.3)
+
+DEPENDENCIES:
+  - YKNetworking (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+
+EXTERNAL SOURCES:
+  YKNetworking:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
+  YKNetworking: 861d83dab10a4ff496d9af75eb16997505449734
+
+PODFILE CHECKSUM: 116912c640d00a6d068085435bf17edf78d86558
+
+COCOAPODS: 1.10.0

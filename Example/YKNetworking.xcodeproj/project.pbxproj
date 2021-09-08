@@ -28,10 +28,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00B9BA89A1975F3710C3BEFB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		00B9BA89A1975F3710C3BEFB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		01752A45251D9FAC8ACB5CDE /* Pods-YKNetworking_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YKNetworking_Example.debug.xcconfig"; path = "Target Support Files/Pods-YKNetworking_Example/Pods-YKNetworking_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		0EA18FEE921E305955806B62 /* Pods_YKNetworking_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YKNetworking_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4424F0557570BD4647AB3F2B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		4424F0557570BD4647AB3F2B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5018FBC06C16328EB354C8A8 /* Pods_YKNetworking_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YKNetworking_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* YKNetworking_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YKNetworking_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,12 +43,12 @@
 		607FACE51AFB9204008FA782 /* YKNetworking_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YKNetworking_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		68979DBA902D59575E1A9C83 /* Fastfile */ = {isa = PBXFileReference; includeInIndex = 1; name = Fastfile; path = ../fastlane/Fastfile; sourceTree = "<group>"; };
-		8A35F2DE79294D57278DB7BE /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = YKNetworking.podspec; path = ../fmk/YKNetworking.podspec; sourceTree = "<group>"; };
+		68979DBA902D59575E1A9C83 /* Fastfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Fastfile; path = ../fastlane/Fastfile; sourceTree = "<group>"; };
+		8A35F2DE79294D57278DB7BE /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = YKNetworking.podspec; path = ../fmk/YKNetworking.podspec; sourceTree = "<group>"; };
 		9CC9E4F630FC23DA66B1A6D2 /* Pods-YKNetworking_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YKNetworking_Tests.debug.xcconfig"; path = "Target Support Files/Pods-YKNetworking_Tests/Pods-YKNetworking_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		AB85DDC1E0FA98D4EE917FAF /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = YKNetworking.podspec; path = ../lib/YKNetworking.podspec; sourceTree = "<group>"; };
+		AB85DDC1E0FA98D4EE917FAF /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = YKNetworking.podspec; path = ../lib/YKNetworking.podspec; sourceTree = "<group>"; };
 		B7E9931F98589C6AAA59B79F /* Pods-YKNetworking_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YKNetworking_Example.release.xcconfig"; path = "Target Support Files/Pods-YKNetworking_Example/Pods-YKNetworking_Example.release.xcconfig"; sourceTree = "<group>"; };
-		D20FF0BC458064E90264569E /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = YKNetworking.podspec; path = ../YKNetworking.podspec; sourceTree = "<group>"; };
+		D20FF0BC458064E90264569E /* YKNetworking.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = YKNetworking.podspec; path = ../YKNetworking.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		F68CA82EF5CCBDD8443DB764 /* Pods-YKNetworking_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YKNetworking_Tests.release.xcconfig"; path = "Target Support Files/Pods-YKNetworking_Tests/Pods-YKNetworking_Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -178,7 +178,6 @@
 				9CC9E4F630FC23DA66B1A6D2 /* Pods-YKNetworking_Tests.debug.xcconfig */,
 				F68CA82EF5CCBDD8443DB764 /* Pods-YKNetworking_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -336,10 +335,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-YKNetworking_Example/Pods-YKNetworking_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/YKNetworking/YKNetworking.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YKNetworking.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
