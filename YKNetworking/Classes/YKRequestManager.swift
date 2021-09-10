@@ -8,12 +8,12 @@
 import Foundation
 import Alamofire
 
-public class YKRequestManager {
+public class YKRequestManager: RedirectHandler {
     static let defaultManager = YKRequestManager()
     
     var sessionManager: Alamofire.Session!
     let config: YKNetworkingConfig
-    var requestRecords: Dictionary<UUID, YKRequest>
+    var requestRecords: Dictionary<Int, YKRequest>
     var mutexLock: pthread_mutex_t = pthread_mutex_t()
     var processingQueue: dispatch_queue_concurrent_t
     var allStatusCodes: IndexSet
@@ -29,8 +29,9 @@ public class YKRequestManager {
     
     // MARK: - 公开API
     public func addRequest(_ req: YKRequest) -> Void {
-        req.request = buildRequest(req)
-        with(request: req, f: addRequestToRecord)
+        req.request = buildRequest(req).onURLSessionTaskCreation(perform: { task in
+            self.with(request: req, f: self.addRequestToRecord)
+        })
     }
     
     public func cancelRequest(_ req: YKRequest) -> Void {
@@ -126,7 +127,9 @@ public class YKRequestManager {
                                                 to: url, headers: headers) { urlRequest in
                 urlRequest.timeoutInterval = req.requestTimeoutInterval()
                 urlRequest.allowsCellularAccess = req.allowsCellularAccess()
-            }
+            }.validate().responseData(completionHandler: { [weak self] response in
+                self?.handleResponse(request: req, response: response)
+            })
         } else {
             return sessionManager.request(url,
                                           method: method,
@@ -134,7 +137,7 @@ public class YKRequestManager {
                                           headers: headers) { urlRequest in
                 urlRequest.timeoutInterval = req.requestTimeoutInterval()
                 urlRequest.allowsCellularAccess = req.allowsCellularAccess()
-            }.validate().responseData(completionHandler: { [weak self] response in
+            }.redirect(using: self).validate().responseData(completionHandler: { [weak self] response in
                 self?.handleResponse(request: req, response: response)
             })
         }
@@ -207,27 +210,170 @@ public class YKRequestManager {
     }
     
     // MARK: 处理结果
-    func handleResponse(request: YKRequest, response: AFDataResponse<Data>) -> Void {
-        request.responseData = response.data
-        if let data = response.data {
-            request.responseString = String.init(data: data, encoding: .utf8)
+    func validateResult(_ request: YKRequest) throws -> Void {
+        var result = true
+        let json = request.responseJSON
+        if (json != nil) {
+            let filters = config.validateResultFitlers()
+            for filter in filters {
+                result = filter.filterValidateResult(request)
+                if !result {
+                    break
+                }
+            }
+            if !result {
+                throw YKError.InvalidResult
+            }
         }
-        
+    }
+    
+    func handleResponse(request: YKRequest, response: AFDataResponse<Data>) -> Void {
+        switch response.result {
+        case .success(_):
+            handleRsonponse(req: request,
+                            request: response.request,
+                            response: response.response,
+                            data: response.data,
+                            error: nil)
+        case .failure(let error):
+            handleRsonponse(req: request,
+                            request: response.request,
+                            response: response.response,
+                            data: response.data,
+                            error: error)
+        }
     }
     
     func handleDownloadResponse(request: YKRequest, response: AFDownloadResponse<Data>) -> Void {
+        switch response.result {
+        case .success(_):
+            requestSuccess(request)
+        case .failure(let error):
+            downloadRequestFailed(request: request, response: response, error: error)
+        }
+        DispatchQueue.main.async {
+            self.removeRequestFromRecord(request)
+            request.clearHandler()
+        }
+    }
+    
+    func handleRsonponse(req: YKRequest, request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) -> Void {
+        var requestError: Error? = nil
+        var serializationError: Error? = nil
+        var success = true
         
+        req.responseData = data
+        if (data != nil) {
+            req.responseString = String.init(data: data!, encoding: .utf8)
+            let jsonSerializer = JSONResponseSerializer.init()
+            do {
+                req.responseJSON = try jsonSerializer.serialize(request:request, response:response, data:data, error:nil)
+            } catch {
+                serializationError = YKError.JSONSerializationFailed
+            }
+        }
+        
+        if (error != nil) {
+            success = false
+            requestError = error
+        } else if (serializationError != nil) {
+            success = false
+            requestError = serializationError
+        } else {
+            do {
+                try validateResult(req)
+            } catch {
+                success = false
+                requestError = YKError.InvalidResult
+            }
+        }
+        
+        if success {
+            requestSuccess(req)
+        } else {
+            requestFailed(request: req, error: requestError!)
+        }
+        
+        DispatchQueue.main.async {
+            self.removeRequestFromRecord(req)
+            req.clearHandler()
+        }
+    }
+    
+    func requestSuccess(_ request: YKRequest) -> Void {
+        DispatchQueue.main.async {
+            // success filter
+            if request.useSuccessFilterInConfig() {
+                let filters = self.config.successFilters()
+                for filter in filters {
+                    filter.filterSuccess(request)
+                }
+            } else {
+                request.filterSuccess(request)
+            }
+            // handler
+            if let successHandler = request.successHandler {
+                successHandler(request)
+            }
+        }
+    }
+    
+    func requestFailed(request: YKRequest, error: Error) -> Void {
+        request.error = error
+        DispatchQueue.main.async {
+            //failed filter
+            if request.useFailedFilterInConfig() {
+                let filters = self.config.failedFilters()
+                for filter in filters {
+                    filter.filterFailed(error, request)
+                }
+            } else {
+                request.filterFailed(error, request)
+            }
+            // handler
+            if let failedHandler = request.failedHandler {
+                failedHandler(request)
+            }
+        }
+    }
+    
+    func downloadRequestFailed(request: YKRequest, response: AFDownloadResponse<Data>, error: Error) -> Void {
+        request.error = error
+        // save incomplete download data
+        if let data = response.resumeData {
+            let url = request.currentRequest?.url?.absoluteString ?? ""
+            try? data.write(to: incompleteDownloadTempPathForUrl(url), options: .atomic)
+        }
+        
+        // load response from file and clean up if download task failed
+        if let fileURL = response.fileURL {
+            if fileURL.isFileURL && FileManager.default.fileExists(atPath: fileURL.path) {
+                request.responseData = try? Data.init(contentsOf: fileURL)
+                request.responseString = String.init(data: request.responseData ?? Data.init(), encoding: .utf8)
+                try? FileManager.default.removeItem(at: fileURL)
+            }
+        }
+        requestFailed(request: request, error: error);
+    }
+    
+    public func task(_ task: URLSessionTask, willBeRedirectedTo request: URLRequest, for response: HTTPURLResponse, completion: @escaping (URLRequest?) -> Void) {
+        lock()
+        let req = requestRecords[task.taskIdentifier]
+        unlock()
+        if let redirectionHandler = req?.redirectionHandler {
+            redirectionHandler(req!, response)
+        }
     }
 }
 
 
 extension YKRequestManager {
     public func addRequestToRecord(_ req: YKRequest) -> Void {
-        requestRecords[req.request!.id] = req
+        requestRecords[req.requestTask!.taskIdentifier] = req
     }
     
     public func removeRequestFromRecord(_ req: YKRequest) -> Void {
-        requestRecords.removeValue(forKey: req.request!.id)
+        requestRecords.removeValue(forKey: req.requestTask!.taskIdentifier)
     }
  
     func with(request: YKRequest, f: (YKRequest) -> Void) {

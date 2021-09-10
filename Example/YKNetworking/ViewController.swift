@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import YKNetworking
 
 class ViewController: UIViewController {
 
@@ -19,6 +20,14 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 
+    @IBAction func getButtonTouchUpInside(_ sender: UIButton) {
+        let request = GetRequest()
+        request.success { request in
+            print(request.responseJSON)
+        }.start()
+    }
+    
 }
 

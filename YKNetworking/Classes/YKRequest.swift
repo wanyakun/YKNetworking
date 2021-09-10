@@ -12,68 +12,75 @@ public typealias YKRequestCompletionClosure = (_ request: YKRequest) -> Void
 public typealias YKRequestRedirectionClosure = (_ request: YKRequest, _ response: HTTPURLResponse) -> Void
 public typealias YKRequestPorgressHandler = (_ progress: Progress) -> Void
 public typealias YKRequestMultipartFormClosure = (_ multipartFormData: MultipartFormData) -> Void
-open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol {
+open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilterProtocol, YKFailedFilterProtocol {
     public var request: Request?
     
     public var responseData: Data?
     public var responseString: String?
     public var responseJSON: Any?
+    public var error: Error?
     
     // 成功回调
     var successHandler: YKRequestCompletionClosure?
     // 失败回调
     var failedHandler: YKRequestCompletionClosure?
+    // 重定向回调
+    var redirectionHandler: YKRequestRedirectionClosure?
     // 下载进度回调
     var resumableDownloadProgressHandler: YKRequestPorgressHandler?
     // 上传from设置回调
     var multipartFormDataHandler: YKRequestMultipartFormClosure?
     
+    public init() {
+        //
+    }
+    
     // MARK: subclass need override
-    public func baseUrl() -> String {
+    open func baseUrl() -> String {
         return ""
     }
     
-    public func requestUrl() -> String {
+    open func requestUrl() -> String {
         return ""
     }
     
-    public func requestTimeoutInterval() -> TimeInterval {
+    open func requestTimeoutInterval() -> TimeInterval {
         return 30
     }
     
-    public func requestArgument() -> [String: Any]? {
+    open func requestArgument() -> [String: Any]? {
         return nil
     }
     
-    public func requestMehtod() -> YKRequestMethod {
+    open func requestMehtod() -> YKRequestMethod {
         return YKRequestMethod.YKRequestMethodPOST
     }
     
-    public func allowsCellularAccess() -> Bool {
+    open func allowsCellularAccess() -> Bool {
         return true
     }
     
-    public func useURLFilterInConfig() -> Bool {
+    open func useURLFilterInConfig() -> Bool {
         return true
     }
     
-    public func useHeaderFilterInConfig() -> Bool {
+    open func useHeaderFilterInConfig() -> Bool {
         return true
     }
     
-    public func useCachePathFilterInConfig() -> Bool {
+    open func useCachePathFilterInConfig() -> Bool {
         return true
     }
     
-    public func useSuccessFilterInConfig() -> Bool {
+    open func useSuccessFilterInConfig() -> Bool {
         return true
     }
     
-    public func useFailedFilterInConfig() -> Bool {
+    open func useFailedFilterInConfig() -> Bool {
         return true
     }
     
-    public func useValidateResultFilterInConfig() -> Bool {
+    open func useValidateResultFilterInConfig() -> Bool {
         return true
     }
     
@@ -97,6 +104,11 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol {
         return self
     }
     
+    public func redirection(_ closure: @escaping YKRequestRedirectionClosure) -> Self {
+        redirectionHandler = closure
+        return self
+    }
+    
     public func downloadProgress(_ closure: @escaping YKRequestPorgressHandler) -> Self {
         resumableDownloadProgressHandler = closure
         return self
@@ -113,13 +125,23 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol {
     }
     
     // MARK: protocol subclass need override
-    public func filterHeader(_ originHeader: Dictionary<String, String>, _ request: YKRequest) -> Dictionary<String, String> {
+    open func filterHeader(_ originHeader: Dictionary<String, String>, _ request: YKRequest) -> Dictionary<String, String> {
         return originHeader
     }
     
-    public func filterUrl(originUrl: String, request: YKRequest) -> String {
+    open func filterUrl(originUrl: String, request: YKRequest) -> String {
         return originUrl
     }
+    
+    open func filterSuccess(_ request: YKRequest) {
+        // to be override
+    }
+    
+    open func filterFailed(_ error: Error, _ request: YKRequest) {
+        // to be override
+    }
+    
+    
     
     // MARK: - all api
     public func start() -> Self {
