@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/wanyakun/YKNetworking'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'wanyakun' => 'yakun.wan@gmail.com' }
-  s.source           = { :git => 'https://github.com/wanyakun/YKNetworking.git', :tag => s.version.to_s }
+  s.source           = { :git => 'git@github.com:wanyakun/YKNetworking.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '10.0'
   s.requires_arc          = true
