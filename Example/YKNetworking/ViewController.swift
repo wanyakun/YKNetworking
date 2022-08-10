@@ -29,5 +29,13 @@ class ViewController: UIViewController {
         }.start()
     }
     
+    @IBAction func postButtonDidTouchUpInside(_ sender: UIButton) {
+        let request = PostRequest()
+        request.success { request in
+            print(request.responseJSON)
+        }.failed({ request in
+            print(request.error)
+            print(request.responseJSON)
+        }).start()
+    }
 }
-

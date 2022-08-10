@@ -14,7 +14,11 @@ public protocol YKURLFilterProtocol {
 }
 
 public protocol YKHeaderFilterProtocol {
-    func filterHeader(_ originHeader: Dictionary<String, String>, _ request: YKRequest) -> Dictionary<String, String>
+    func filterHeader(_ originHeader: [String: String], _ request: YKRequest) -> [String: String]
+}
+
+public protocol YKParamsFilterProtocol: Encodable {
+    func filterParams(_ originParams: [String: Any], _ request: YKRequest) -> [String: Any]
 }
 
 public protocol YKCachePathFilterProtocol {
@@ -38,12 +42,13 @@ public class YKNetworkingConfig {
     public static let shared = YKNetworkingConfig()
     
     // MARK: property
-    var baseUrl: String = ""
-    var serverTrustManager: ServerTrustManager? = nil
-    var sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.af.default
+    public var baseUrl: String = ""
+    public var serverTrustManager: ServerTrustManager? = nil
+    public var sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.af.default
     
     private var _urlFilters: Array<YKURLFilterProtocol> = []
     private var _headerFilters: Array<YKHeaderFilterProtocol> = []
+    private var _paramsFilters: Array<YKParamsFilterProtocol> = []
     private var _cachePathFilters: Array<YKCachePathFilterProtocol> = []
     private var _successFilters: Array<YKSuccessFilterProtocol> = []
     private var _failedFilters: Array<YKFailedFilterProtocol> = []
@@ -63,6 +68,14 @@ public class YKNetworkingConfig {
     
     public func clearHeaderFilter() {
         _headerFilters.removeAll()
+    }
+    
+    public func addParamsFilter(filter: YKParamsFilterProtocol) {
+        _paramsFilters.append(filter)
+    }
+    
+    public func clearParamsFilter() {
+        _paramsFilters.removeAll()
     }
     
     public func addCachePathFilter(filter: YKCachePathFilterProtocol) {
@@ -103,6 +116,10 @@ public class YKNetworkingConfig {
     
     public func headerFilters() -> Array<YKHeaderFilterProtocol> {
         return _headerFilters
+    }
+    
+    public func paramsFilters() -> Array<YKParamsFilterProtocol> {
+        return _paramsFilters
     }
     
     public func cachePathFitlers() -> Array<YKCachePathFilterProtocol> {

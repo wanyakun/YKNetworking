@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57212F9928A3450600A54C7E /* PostRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57212F9828A3450600A54C7E /* PostRequest.swift */; };
+		57212F9C28A35D1E00A54C7E /* YKParamsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57212F9B28A35D1E00A54C7E /* YKParamsFilter.swift */; };
+		57212F9E28A381C400A54C7E /* YKHeaderFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57212F9D28A381C400A54C7E /* YKHeaderFilter.swift */; };
+		57212FA028A39FEC00A54C7E /* YKValidateResultFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57212F9F28A39FEC00A54C7E /* YKValidateResultFilter.swift */; };
 		57DD7C0C26E88CAA00B45147 /* GetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DD7C0B26E88CAA00B45147 /* GetRequest.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -34,6 +38,10 @@
 		0EA18FEE921E305955806B62 /* Pods_YKNetworking_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YKNetworking_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4424F0557570BD4647AB3F2B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5018FBC06C16328EB354C8A8 /* Pods_YKNetworking_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YKNetworking_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		57212F9828A3450600A54C7E /* PostRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRequest.swift; sourceTree = "<group>"; };
+		57212F9B28A35D1E00A54C7E /* YKParamsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YKParamsFilter.swift; sourceTree = "<group>"; };
+		57212F9D28A381C400A54C7E /* YKHeaderFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YKHeaderFilter.swift; sourceTree = "<group>"; };
+		57212F9F28A39FEC00A54C7E /* YKValidateResultFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YKValidateResultFilter.swift; sourceTree = "<group>"; };
 		57DD7C0B26E88CAA00B45147 /* GetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRequest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* YKNetworking_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YKNetworking_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -83,6 +91,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		57212F9A28A357BF00A54C7E /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				57212F9B28A35D1E00A54C7E /* YKParamsFilter.swift */,
+				57212F9D28A381C400A54C7E /* YKHeaderFilter.swift */,
+				57212F9F28A39FEC00A54C7E /* YKValidateResultFilter.swift */,
+			);
+			path = Filter;
+			sourceTree = "<group>";
+		};
 		5770B1FA1F72565B00853FFA /* FMK Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +143,7 @@
 		607FACD21AFB9204008FA782 /* Example for YKNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				57212F9A28A357BF00A54C7E /* Filter */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -132,6 +151,7 @@
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				57DD7C0B26E88CAA00B45147 /* GetRequest.swift */,
+				57212F9828A3450600A54C7E /* PostRequest.swift */,
 			);
 			name = "Example for YKNetworking";
 			path = YKNetworking;
@@ -237,11 +257,15 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = CPCKW8YN4U;
 						LastSwiftMigration = 0820;
+						ProvisioningStyle = Manual;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = CPCKW8YN4U;
 						LastSwiftMigration = 0820;
+						ProvisioningStyle = Manual;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
 				};
@@ -358,9 +382,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57212F9E28A381C400A54C7E /* YKHeaderFilter.swift in Sources */,
+				57212FA028A39FEC00A54C7E /* YKValidateResultFilter.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				57DD7C0C26E88CAA00B45147 /* GetRequest.swift in Sources */,
+				57212F9928A3450600A54C7E /* PostRequest.swift in Sources */,
+				57212F9C28A35D1E00A54C7E /* YKParamsFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,12 +522,15 @@
 			baseConfigurationReference = 01752A45251D9FAC8ACB5CDE /* Pods-YKNetworking_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = CPCKW8YN4U;
 				INFOPLIST_FILE = YKNetworking/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.aioser.demo.YKNetworking-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cdgwin.demo.YKNetworking-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.cdgwin.*";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -509,12 +540,15 @@
 			baseConfigurationReference = B7E9931F98589C6AAA59B79F /* Pods-YKNetworking_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = CPCKW8YN4U;
 				INFOPLIST_FILE = YKNetworking/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.aioser.demo.YKNetworking-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cdgwin.demo.YKNetworking-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.cdgwin.*";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -523,6 +557,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CC9E4F630FC23DA66B1A6D2 /* Pods-YKNetworking_Tests.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = CPCKW8YN4U;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -535,6 +571,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -543,6 +581,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F68CA82EF5CCBDD8443DB764 /* Pods-YKNetworking_Tests.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = CPCKW8YN4U;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -551,6 +591,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

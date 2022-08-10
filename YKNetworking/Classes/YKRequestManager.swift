@@ -11,7 +11,7 @@ import Alamofire
 public class YKRequestManager: RedirectHandler {
     static let defaultManager = YKRequestManager()
     
-    var sessionManager: Alamofire.Session!
+    var session: Alamofire.Session!
     let config: YKNetworkingConfig
     var requestRecords: Dictionary<Int, YKRequest>
     var mutexLock: pthread_mutex_t = pthread_mutex_t()
@@ -24,7 +24,7 @@ public class YKRequestManager: RedirectHandler {
         pthread_mutex_init(&mutexLock, nil)
         processingQueue = DispatchQueue(label: "com.aioser.networking.processing", attributes: .concurrent) as! dispatch_queue_concurrent_t
         allStatusCodes = IndexSet.init(integersIn: 100...500)
-        sessionManager = Alamofire.Session(configuration: config.sessionConfiguration, serverTrustManager: config.serverTrustManager)
+        session = Alamofire.Session(configuration: config.sessionConfiguration, serverTrustManager: config.serverTrustManager)
     }
     
     // MARK: - 公开API
@@ -77,7 +77,7 @@ public class YKRequestManager: RedirectHandler {
 
     
     func buildRequestHeader(_ request: YKRequest) -> HTTPHeaders {
-        var headers: Dictionary<String, String> = [:]
+        var headers: [String: String] = [:]
         if request.useHeaderFilterInConfig() {
             let filters = config.headerFilters()
             for filter in filters {
@@ -89,10 +89,22 @@ public class YKRequestManager: RedirectHandler {
         return HTTPHeaders(headers)
     }
     
+    func buildRequestParams(_ request: YKRequest) -> [String: Any] {
+        let requestParams = request.requestArgument()
+        var targetParams: [String: Any] = (requestParams != nil) ? requestParams! : [:]
+        if request.useParamsFilterInConfig() {
+            let filters = config.paramsFilters()
+            for filter in filters {
+                targetParams = filter.filterParams(targetParams, request)
+            }
+        }
+        return targetParams
+    }
+    
     func buildRequest(_ request: YKRequest) -> Request {
         let method = request.requestMehtod()
         let url = buildRequestUrl(request)
-        let parameters = request.requestArgument()
+        let parameters = buildRequestParams(request)
         request.cachedArgument = parameters
         let headers = buildRequestHeader(request)
         switch method {
@@ -123,7 +135,7 @@ public class YKRequestManager: RedirectHandler {
     // MARK: 处理请求
     func httpRequest(url: String, method: HTTPMethod, params: Parameters?, headers: HTTPHeaders?, req: YKRequest) -> Request {
         if (req.multipartFormDataHandler != nil)  {
-            return sessionManager.upload(multipartFormData: req.multipartFormDataHandler!,
+            return session.upload(multipartFormData: req.multipartFormDataHandler!,
                                                 to: url, headers: headers) { urlRequest in
                 urlRequest.timeoutInterval = req.requestTimeoutInterval()
                 urlRequest.allowsCellularAccess = req.allowsCellularAccess()
@@ -131,10 +143,11 @@ public class YKRequestManager: RedirectHandler {
                 self?.handleResponse(request: req, response: response)
             })
         } else {
-            return sessionManager.request(url,
-                                          method: method,
-                                          parameters: params,
-                                          headers: headers) { urlRequest in
+            return session.request(url,
+                                   method: method,
+                                   parameters: params,
+                                   encoding: req.encoding(),
+                                   headers: headers) { urlRequest in
                 urlRequest.timeoutInterval = req.requestTimeoutInterval()
                 urlRequest.allowsCellularAccess = req.allowsCellularAccess()
             }.redirect(using: self).validate().responseData(completionHandler: { [weak self] response in
@@ -170,14 +183,14 @@ public class YKRequestManager: RedirectHandler {
         
         var downloadRequest: DownloadRequest? = nil
         if canBeResumed {
-            downloadRequest = sessionManager.download(resumingWith: data!, to: { targetPath, response in
+            downloadRequest = session.download(resumingWith: data!, to: { targetPath, response in
                 let url = URL.init(fileURLWithPath: downloadTargertPath, isDirectory: false)
                 return (url, [.createIntermediateDirectories])
             }).downloadProgress(closure: req.resumableDownloadProgressHandler!).validate().responseData(completionHandler: { [weak self] response in
                 self?.handleDownloadResponse(request: req, response: response)
             })
         } else {
-            downloadRequest = sessionManager.download(url, to: { targetPath, response  in
+            downloadRequest = session.download(url, to: { targetPath, response  in
                 let url = URL.init(fileURLWithPath: downloadTargertPath, isDirectory: false)
                 return (url, [.removePreviousFile, .createIntermediateDirectories])
             }).downloadProgress(closure: req.resumableDownloadProgressHandler!).validate().responseData(completionHandler: { [weak self] response in

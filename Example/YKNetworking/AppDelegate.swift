@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import YKNetworking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        YKNetworkingConfig.shared.baseUrl = "http://api.cdgwin.com"
+        // filters
+        YKNetworkingConfig.shared.addHeaderFilter(filter: YKHeaderFilter())
+        YKNetworkingConfig.shared.addParamsFilter(filter: YKParamsFilter())
+        YKNetworkingConfig.shared.addValidateResultFilter(filter: YKValidateResultFilter())
         return true
     }
 

@@ -12,7 +12,7 @@ public typealias YKRequestCompletionClosure = (_ request: YKRequest) -> Void
 public typealias YKRequestRedirectionClosure = (_ request: YKRequest, _ response: HTTPURLResponse) -> Void
 public typealias YKRequestPorgressHandler = (_ progress: Progress) -> Void
 public typealias YKRequestMultipartFormClosure = (_ multipartFormData: MultipartFormData) -> Void
-open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilterProtocol, YKFailedFilterProtocol {
+open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilterProtocol, YKFailedFilterProtocol, YKValidateResultFilterProtocol {
     public var request: Request?
     
     public var responseData: Data?
@@ -56,6 +56,14 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilt
         return YKRequestMethod.YKRequestMethodPOST
     }
     
+    open func encoding() -> ParameterEncoding {
+        return JSONEncoding.prettyPrinted
+    }
+    
+    open func replyCodes() -> Array<String> {
+        return []
+    }
+    
     open func allowsCellularAccess() -> Bool {
         return true
     }
@@ -65,6 +73,10 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilt
     }
     
     open func useHeaderFilterInConfig() -> Bool {
+        return true
+    }
+    
+    open func useParamsFilterInConfig() -> Bool {
         return true
     }
     
@@ -139,6 +151,11 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilt
     
     open func filterFailed(_ error: Error, _ request: YKRequest) {
         // to be override
+    }
+    
+    open func filterValidateResult(_ request: YKRequest) -> Bool {
+        // to be override
+        return true
     }
     
     
