@@ -1,0 +1,11 @@
+framework module YKNetworking {
+  umbrella header "YKNetworking-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module YKNetworking.Swift {
+    header "YKNetworking-Swift.h"
+    requires objc
+}
