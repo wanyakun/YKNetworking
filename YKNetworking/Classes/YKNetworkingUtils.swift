@@ -10,25 +10,16 @@ import CommonCrypto
 
 public extension String {
     var md5: String {
-        if self.isEmpty {
-            return ""
-        }
-        // 源字符串
-        let str = self.cString(using: String.Encoding.utf8)
-        let strLen = CUnsignedInt(self.lengthOfBytes(using: String.Encoding.utf8))
-        // 加密结果
-        let digestLen = Int(CC_MD5_DIGEST_LENGTH)
-        let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
-        // 加密
-        CC_MD5(str!, strLen, result)
-        // 加密结果转换
-        let hash = NSMutableString()
-        
-        for i in 0..<digestLen {
-            hash.appendFormat("%02x", result[i])
+        guard let data = self.data(using: .utf8) else {
+            return self
         }
         
-        result.deallocate()
-        return hash as String
+        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+        
+        _ = data.withUnsafeBytes({ (bytes: UnsafeRawBufferPointer) in
+            return CC_MD5(bytes.baseAddress, CC_LONG(data.count), &digest)
+        })
+        
+        return digest.map { String(format: "%02x", $0) }.joined()
     }
 }

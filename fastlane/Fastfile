@@ -36,7 +36,8 @@ platform :ios do
     version = options[:version]
     yk_component_release_static_lib(
       version:version,
-      project:'YKNetworking'
+      project:'YKNetworking',
+      ignore_analyze: true
     )
   end
 
