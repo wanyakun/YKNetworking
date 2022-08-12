@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.version          = '0.0.1'
   s.summary          = 'A short description of YKNetworking.'
   s.description      = <<-DESC
-  TODO: Add long description of the pod here.
+  基于Alamofire二次封装的网络库
     DESC
 
   s.homepage         = 'https://github.com/wanyakun/YKNetworking'

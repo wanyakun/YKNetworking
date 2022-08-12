@@ -27,7 +27,8 @@ platform :ios do
     version = options[:version]
     yk_component_release_src(
       version:version,
-      project:'YKNetworking'
+      project:'YKNetworking',
+      ignore_analyze: true
     )
   end
 
@@ -46,7 +47,8 @@ platform :ios do
     version = options[:version]
     yk_component_release_fmk(
       version:version,
-      project:'YKNetworking'
+      project:'YKNetworking',
+      ignore_analyze: true
     )
   end
 end
