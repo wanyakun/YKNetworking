@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'YKNetworking'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'A short description of YKNetworking.'
   s.description      = <<-DESC
   基于Alamofire二次封装的网络库

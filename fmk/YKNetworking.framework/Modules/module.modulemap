@@ -6,6 +6,6 @@ framework module YKNetworking {
 }
 
 module YKNetworking.Swift {
-    header "YKNetworking-Swift.h"
-    requires objc
+  header "YKNetworking-Swift.h"
+  requires objc
 }
