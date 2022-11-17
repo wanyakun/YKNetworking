@@ -315,6 +315,7 @@ public class YKRequestManager: RedirectHandler {
     
     func requestSuccess(_ request: YKRequest) -> Void {
         DispatchQueue.main.async {
+            request.willStopCallBack()
             // success filter
             if request.useSuccessFilterInConfig() {
                 let filters = self.config.successFilters()
@@ -328,12 +329,14 @@ public class YKRequestManager: RedirectHandler {
             if let successHandler = request.successHandler {
                 successHandler(request)
             }
+            request.didStopCallBack()
         }
     }
     
     func requestFailed(request: YKRequest, error: Error) -> Void {
         request.error = error
         DispatchQueue.main.async {
+            request.willStopCallBack()
             //failed filter
             if request.useFailedFilterInConfig() {
                 let filters = self.config.failedFilters()
@@ -347,6 +350,7 @@ public class YKRequestManager: RedirectHandler {
             if let failedHandler = request.failedHandler {
                 failedHandler(request)
             }
+            request.didStopCallBack()
         }
     }
     

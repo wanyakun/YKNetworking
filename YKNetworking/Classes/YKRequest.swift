@@ -8,6 +8,12 @@
 import Foundation
 import Alamofire
 
+public protocol YKRequestStatusTrackerProtocol {
+    func requestWillStart(_ request: YKRequest)
+    func requestWillStop(_ request: YKRequest)
+    func requestDidStop(_ request: YKRequest)
+}
+
 public typealias YKRequestCompletionClosure = (_ request: YKRequest) -> Void
 public typealias YKRequestRedirectionClosure = (_ request: YKRequest, _ response: HTTPURLResponse) -> Void
 public typealias YKRequestPorgressHandler = (_ progress: Progress) -> Void
@@ -106,6 +112,8 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilt
     // use to perform resumable download request
     public var resumableDownloadPath: String?
     
+    public var requestStatusTrackers: Array<YKRequestStatusTrackerProtocol> = []
+    
     public func success(_ closure: @escaping YKRequestCompletionClosure) -> Self {
         successHandler = closure
         return self
@@ -162,14 +170,21 @@ open class YKRequest: YKURLFilterProtocol, YKHeaderFilterProtocol, YKSuccessFilt
     
     // MARK: - all api
     public func start() -> Self {
+        willStartCallBack()
         // 将request添加到manager中
         YKRequestManager.defaultManager.addRequest(self)
         return self
     }
     
     public func stop() {
+        willStopCallBack()
         // 将request从manager中取消掉
         YKRequestManager.defaultManager.cancelRequest(self)
+        didStopCallBack()
+    }
+    
+    public func addStatusTracker(_ tracker: YKRequestStatusTrackerProtocol) {
+        requestStatusTrackers.append(tracker)
     }
 }
 
@@ -210,5 +225,26 @@ extension YKRequest {
             return false
         }
         return requestTask?.state == URLSessionTask.State.running
+    }
+}
+
+// MARK: - status tracker
+extension YKRequest {
+    public func willStartCallBack() {
+        for tracker in requestStatusTrackers {
+            tracker.requestWillStart(self)
+        }
+    }
+    
+    public func willStopCallBack() {
+        for tracker in requestStatusTrackers {
+            tracker.requestWillStop(self)
+        }
+    }
+    
+    public func didStopCallBack() {
+        for tracker in requestStatusTrackers {
+            tracker.requestDidStop(self)
+        }
     }
 }
